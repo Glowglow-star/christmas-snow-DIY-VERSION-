@@ -26,32 +26,18 @@
     body {
       margin: 0; padding: 0; background-color: #05070a;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      overflow: hidden; 
-      /* Flex centering for the whole page */
-      display: flex; justify-content: center; align-items: center;
-      /* Use dvh for better mobile browser support */
-      height: 100vh; height: 100dvh; 
-      color: var(--text-color); 
+      overflow: hidden; display: flex; justify-content: center; align-items: center;
+      height: 100vh; color: var(--text-color); 
       user-select: none; -webkit-user-select: none; touch-action: none;
     }
 
-    /* Canvas Container - Ensure Centering */
+    /* Canvas Container */
     #canvas-container {
       position: relative; 
       box-shadow: 0 0 80px rgba(0,0,0,0.8);
+      border-radius: 0;
       overflow: hidden; line-height: 0;
       width: 100%; height: 100%;
-      /* Centering the canvas element inside */
-      display: flex; justify-content: center; align-items: center;
-    }
-    
-    /* Ensure canvas behaves */
-    canvas {
-      display: block;
-      margin: auto;
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
     }
     
     @media (min-width: 768px) {
@@ -296,8 +282,10 @@
     };
 
     function setup() {
-      // Setup with initial dimensions
-      const cnv = createCanvas(window.innerWidth, window.innerHeight);
+      const screenW = window.innerWidth;
+      const screenH = window.innerHeight;
+      
+      const cnv = createCanvas(screenW, screenH);
       cnv.parent('canvas-container');
       
       document.addEventListener('contextmenu', event => event.preventDefault());
@@ -327,20 +315,25 @@
         editBtn.innerHTML = isEditing ? "<span>✅</span> Done" : "<span>🔧</span> Edit";
       });
 
-      // Music Toggle Logic
+      // Music Toggle Logic (Custom vs Procedural)
       musicBtn.addEventListener('click', () => {
         userStartAudio();
+        
+        // Check if we are using Custom BGM or MusicBox
         if (customBGM) {
+          // Handling Custom BGM
           if (customBGM.isPlaying()) {
             customBGM.pause();
             musicBtn.classList.remove('playing');
           } else {
+            // Stop procedural if running
             musicBox.stop();
             customBGM.loop();
-            customBGM.setVolume(0.5); 
+            customBGM.setVolume(0.5); // Default volume for MP3s
             musicBtn.classList.add('playing');
           }
         } else {
+          // Handling Procedural BGM
           if (!musicBox.isPlaying) {
             musicBox.play();
             musicBtn.classList.add('playing');
@@ -351,7 +344,7 @@
         }
       });
 
-      // Image Upload & Resize Logic
+      // Image Upload
       fileInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -360,28 +353,17 @@
             bgImage = img;
             bgLoaded = true;
             
-            // Use window dimensions to calculate aspect ratio fit
             const screenW = window.innerWidth;
             const screenH = window.innerHeight;
             
-            // Fit logic: cover as much as possible but contain within screen
-            const imgRatio = img.width / img.height;
-            const screenRatio = screenW / screenH;
+            resizeCanvas(screenW, screenH);
             
-            let finalW, finalH;
+            const scaleW = screenW / img.width;
+            const scaleH = screenH / img.height;
+            const scale = Math.min(scaleW, scaleH) * 0.95;
             
-            // If screen is wider than image (landscape screen, portrait image)
-            if (screenRatio > imgRatio) {
-                finalH = screenH;
-                finalW = finalH * imgRatio;
-            } else {
-                // Screen is narrower than image (portrait screen, landscape image)
-                finalW = screenW;
-                finalH = finalW / imgRatio;
-            }
-            
-            // Important: Resize canvas to the fitted image size
-            // The CSS flexbox will center this canvas element
+            const finalW = img.width * scale;
+            const finalH = img.height * scale;
             resizeCanvas(finalW, finalH);
 
             initWindows(); 
@@ -397,6 +379,7 @@
       audioInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (file) {
+          // p5.sound loadSound can take a File object or URL
           const url = URL.createObjectURL(file);
           loadSound(url, (sound) => {
             customBGM = sound;
@@ -450,7 +433,7 @@
       } catch (err) { console.error(err); alert("Error: " + err.message); }
     }
 
-    // --- Music Box ---
+    // --- Soothing Procedural Music Box ---
     class MusicBox {
       constructor() {
         this.osc = new p5.Oscillator('sine'); 
@@ -494,8 +477,10 @@
           let note = this.melody[this.currentNote];
           this.osc.freq(note.n + random(-1, 1));
           this.env.play(this.osc, 0, 0.1);
+          
           let durationMs = note.d * (60000 / this.bpm);
           this.nextNoteTime = millis() + durationMs;
+          
           this.currentNote++;
           if (this.currentNote >= this.melody.length) this.currentNote = 0;
         }
@@ -654,133 +639,72 @@
     class Window {
       constructor(nx, ny, nw, nh) {
         this.nx = nx; this.ny = ny; this.nw = nw; this.nh = nh;
-        this.brightness = 0;
-        this.state = 'IDLE';
-        this.timer = 0;
-        this.shape = 'RECT';
+        this.brightness = 0; this.state = 'IDLE'; this.timer = 0; this.shape = 'RECT'; 
       }
-
       getPixelX() { return this.nx * width; }
       getPixelY() { return this.ny * height; }
       getPixelW() { return this.nw * width; }
       getPixelH() { return this.nh * height; }
-
-      setPixelPos(px, py) {
-        this.nx = px / width;
-        this.ny = py / height;
-      }
-      setPixelSize(pw, ph) {
-        this.nw = pw / width;
-        this.nh = ph / height;
-      }
-      toggleShape() {
-        this.shape = (this.shape === "RECT") ? "CIRCLE" : "RECT";
-      }
-
+      setPixelPos(px, py) { this.nx = px / width; this.ny = py / height; }
+      setPixelSize(pw, ph) { this.nw = pw / width; this.nh = ph / height; }
+      toggleShape() { this.shape = (this.shape === 'RECT') ? 'CIRCLE' : 'RECT'; }
       contains(px, py) {
-        let x = this.getPixelX(), y = this.getPixelY();
-        let w = this.getPixelW(), h = this.getPixelH();
+        let x = this.getPixelX(), y = this.getPixelY(), w = this.getPixelW(), h = this.getPixelH();
         return px > x && px < x + w && py > y && py < y + h;
       }
-
       isCornerHover(px, py) {
-        let x = this.getPixelX(), y = this.getPixelY();
-        let w = this.getPixelW(), h = this.getPixelH();
-        return dist(px, py, x + w, y + h) < 25;
+        let x = this.getPixelX(), y = this.getPixelY(), w = this.getPixelW(), h = this.getPixelH();
+        return dist(px, py, x + w, y + h) < 25; 
       }
-
       trigger() {
         if (this.state === 'IDLE' || this.state === 'FADING') {
-          this.state = 'TRIGGERED';
-          this.timer = 0;
-          playMagicSound();
+          this.state = 'TRIGGERED'; this.timer = 0; playMagicSound();
         }
       }
-
       update() {
-        if (isEditing) {
-          this.brightness = 0.5;
-          return;
-        }
-
+        if(isEditing) { this.brightness = 0.5; return; }
         this.timer++;
-
         switch (this.state) {
-          case 'IDLE':
-            this.brightness = 0;
-            break;
+          case 'IDLE': this.brightness = 0; break;
           case 'TRIGGERED':
-            this.brightness = min(1, this.timer / 60);
-            if (this.brightness >= 1) {
-              this.state = 'SUSTAIN';
-              this.timer = 0;
-            }
+            this.brightness = min(1, this.timer / 60); 
+            if (this.brightness >= 1) { this.state = 'SUSTAIN'; this.timer = 0; }
             break;
           case 'SUSTAIN':
-            this.brightness = 1;
-            if (this.timer > 60) {
-              this.state = 'FADING';
-              this.timer = 0;
-            }
+            this.brightness = 1; if (this.timer > 60) { this.state = 'FADING'; this.timer = 0; }
             break;
           case 'FADING':
-            this.brightness = max(0, 1 - this.timer / 40);
-            if (this.brightness <= 0) this.state = 'IDLE';
+            this.brightness = max(0, 1 - this.timer / 30); if (this.brightness <= 0) this.state = 'IDLE';
             break;
         }
       }
-
       display() {
-        let x = this.getPixelX(), y = this.getPixelY();
-        let w = this.getPixelW(), h = this.getPixelH();
-        let cx = x + w/2, cy = y + h/2;
-
-        // Edit mode visuals
+        let x = this.getPixelX(), y = this.getPixelY(), w = this.getPixelW(), h = this.getPixelH();
+        
         if (isEditing) {
-          stroke(255, 200);
-          strokeWeight(1);
-          fill(255, 200, 100, 50);
-          if (this.shape === "CIRCLE") {
-            rect(x, y, w, h);
-            fill(255, 220, 100, 150);
-            ellipse(cx, cy, w, h);
-          } else {
-            rect(x, y, w, h);
-          }
-          noStroke();
-          fill(255);
-          circle(x + w, y + h, 12);
-          return;
+          stroke(255, 200); strokeWeight(1); fill(255, 200, 100, 50);
+          if (this.shape === 'CIRCLE') {
+             rect(x, y, w, h); 
+             fill(255, 220, 100, 150); 
+             ellipse(x + w/2, y + h/2, w, h); 
+          } else { rect(x, y, w, h); }
+          noStroke(); fill(255); circle(x + w, y + h, 12); return;
         }
 
-        // Soft gentle glow (mobile friendly)
         if (this.brightness > 0.01) {
           push();
-          blendMode(ADD);
-
           const alpha = this.brightness * 255;
-          noStroke();
+          const cx = x + w/2; const cy = y + h/2;
+          
+          drawingContext.filter = 'blur(15px)'; 
+          fill(255, 180, 60, alpha * 0.4);
+          if (this.shape === 'CIRCLE') ellipse(cx, cy, w*1.2, h*1.2);
+          else rect(x - w*0.1, y - h*0.1, w*1.2, h*1.2);
 
-          // Outer glow
-          drawingContext.shadowBlur = 25;
-          drawingContext.shadowColor = `rgba(255, 200, 120, ${this.brightness * 0.25})`;
-          fill(255, 190, 120, alpha * 0.25);
-          if (this.shape === "CIRCLE") ellipse(cx, cy, w * 1.4, h * 1.4);
-          else rect(x - w * 0.2, y - h * 0.2, w * 1.4, h * 1.4);
-
-          // Middle glow
-          drawingContext.shadowBlur = 15;
-          drawingContext.shadowColor = `rgba(255, 220, 150, ${this.brightness * 0.35})`;
-          fill(255, 220, 150, alpha * 0.35);
-          if (this.shape === "CIRCLE") ellipse(cx, cy, w * 1.1, h * 1.1);
-          else rect(x - w * 0.05, y - h * 0.05, w * 1.1, h * 1.1);
-
-          // Inner core
-          drawingContext.shadowBlur = 8;
-          drawingContext.shadowColor = `rgba(255, 240, 200, ${this.brightness * 0.4})`;
-          fill(255, 240, 200, alpha * 0.45);
-          if (this.shape === "CIRCLE") ellipse(cx, cy, w * 0.8, h * 0.8);
-          else rect(x + w * 0.1, y + h * 0.1, w * 0.8, h * 0.8);
+          drawingContext.filter = 'blur(4px)';
+          fill(255, 240, 180, alpha * 0.9);
+          if (this.shape === 'CIRCLE') ellipse(cx, cy, w*0.85, h*0.85);
+          else rect(x + w*0.1, y + h*0.1, w*0.8, h*0.8); 
 
           pop();
         }
