@@ -25,7 +25,6 @@
 
     body {
       margin: 0; padding: 0; background-color: #05070a;
-      /* Deep gradient background for better atmosphere */
       background: radial-gradient(circle at center, #1a1f2e 0%, #05070a 100%);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       overflow: hidden; 
@@ -37,38 +36,28 @@
       user-select: none; -webkit-user-select: none; touch-action: none;
     }
 
-    /* Canvas Container - The "Card" */
+    /* Canvas Container */
     #canvas-container {
       position: relative; 
-      /* Enhanced shadow for depth ("Expensive" look) */
       box-shadow: 0 20px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.1);
-      border-radius: 16px; /* Always rounded, even on mobile */
+      border-radius: 16px; 
       overflow: hidden; 
       line-height: 0;
-      /* Allow container to shrink to canvas size */
-      width: auto; 
-      height: auto;
-      /* Prevent it from being larger than screen with some padding */
-      max-width: 100vw; 
-      max-height: 100vh;
-      background: #000; /* Fallback */
+      width: auto; height: auto;
+      max-width: 100vw; max-height: 100vh;
+      background: #000;
     }
     
-    /* Ensure canvas acts as a block to fill container correctly */
-    canvas {
-      display: block;
-    }
+    canvas { display: block; }
 
     @media (min-width: 768px) {
       #canvas-container {
         border-radius: 20px;
-        /* Add slight margin on desktop */
-        max-width: 95vw; 
-        max-height: 95vh;
+        max-width: 95vw; max-height: 95vh;
       }
     }
 
-    /* --- Start Screen UI --- */
+    /* --- UI Elements --- */
     #start-screen {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(5, 8, 16, 0.85); 
@@ -97,7 +86,6 @@
       align-items: center; width: 100%; max-width: 320px; 
     }
 
-    /* Enhanced Mobile Buttons */
     .ui-btn {
       position: relative;
       width: 100%; padding: 16px 24px;
@@ -111,22 +99,9 @@
     }
     
     .ui-btn:active { transform: scale(0.98); background: rgba(255,255,255,0.08); }
+    .upload-btn { border-color: rgba(255, 215, 0, 0.2); color: #ffeba0; background: rgba(255, 215, 0, 0.05); }
+    .audio-btn { border-color: rgba(96, 165, 250, 0.2); color: #bfdbfe; background: rgba(96, 165, 250, 0.05); }
 
-    /* Accent Button (Select Image) */
-    .upload-btn { 
-      border-color: rgba(255, 215, 0, 0.2); 
-      color: #ffeba0;
-      background: rgba(255, 215, 0, 0.05);
-    }
-
-    /* Audio Button (Blueish) */
-    .audio-btn {
-      border-color: rgba(96, 165, 250, 0.2);
-      color: #bfdbfe;
-      background: rgba(96, 165, 250, 0.05);
-    }
-
-    /* Primary Button (Start) */
     #start-btn { 
       background: rgba(255, 255, 255, 0.95); 
       color: #0b1018; border: none;
@@ -138,19 +113,15 @@
 
     #file-input, #audio-input { display: none; }
     
-    .status-container {
-      display: flex; flex-direction: column; gap: 4px;
-      margin-bottom: 10px;
-    }
+    .status-container { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
     .file-status { font-size: 12px; color: #64748b; height: 16px; }
 
-    /* --- In-App UI Overlays --- */
+    /* --- Overlays --- */
     #left-ui-container {
       position: absolute; top: 20px; left: 20px; z-index: 10;
       display: flex; flex-direction: column; gap: 10px;
       align-items: flex-start; pointer-events: none; 
     }
-    
     @media (max-width: 600px) {
       #left-ui-container { transform: scale(0.9); transform-origin: top left; left: 16px; top: 16px; }
     }
@@ -158,8 +129,7 @@
     .status-badge {
       background: var(--glass-bg); border: 1px solid var(--glass-border);
       padding: 6px 14px; border-radius: 20px; font-size: 12px;
-      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-      display: flex; align-items: center; gap: 8px; width: fit-content; pointer-events: auto;
+      backdrop-filter: blur(10px); display: flex; align-items: center; gap: 8px; width: fit-content; pointer-events: auto;
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
     .dot { width: 6px; height: 6px; border-radius: 50%; background-color: #ef4444; transition: all 0.5s; }
@@ -172,11 +142,9 @@
       box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
 
-    /* --- Top Right Controls --- */
     #top-right-controls {
       position: absolute; top: 20px; right: 20px;
-      z-index: 20; opacity: 0; transition: opacity 1s;
-      display: flex; gap: 12px;
+      z-index: 20; opacity: 0; transition: opacity 1s; display: flex; gap: 12px;
     }
     @media (max-width: 600px) {
       #top-right-controls { top: 16px; right: 16px; transform: scale(0.9); transform-origin: top right; }
@@ -185,20 +153,16 @@
     .icon-btn {
       background: var(--glass-bg); border: 1px solid var(--glass-border);
       color: rgba(255,255,255,0.9); padding: 10px 16px; border-radius: 24px;
-      cursor: pointer; font-size: 13px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      cursor: pointer; font-size: 13px; backdrop-filter: blur(10px);
       display: flex; align-items: center; gap: 6px; transition: all 0.2s;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      font-weight: 500;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2); font-weight: 500;
     }
     .icon-btn:active { transform: scale(0.95); background: rgba(255,255,255,0.15); }
     .icon-btn.active { 
-      background: rgba(255, 215, 0, 0.15); 
-      border-color: rgba(255, 215, 0, 0.4); 
-      color: #ffe066; 
+      background: rgba(255, 215, 0, 0.15); border-color: rgba(255, 215, 0, 0.4); color: #ffe066; 
     }
     #music-toggle.playing { color: #86efac; border-color: rgba(134, 239, 172, 0.3); background: rgba(134, 239, 172, 0.1); }
 
-    /* --- Edit Mode Tooltips --- */
     #edit-tips {
       background: var(--glass-bg); color: #cbd5e1; padding: 16px; 
       border-radius: 16px; font-size: 12px; display: none; 
@@ -221,50 +185,37 @@
 
   <div id="canvas-container">
     
-    <!-- Left UI -->
     <div id="left-ui-container">
       <div class="status-badge"><div class="dot" id="cam-dot"></div><span id="cam-status">Waiting for Camera...</span></div>
       <div class="status-badge"><div class="dot" id="model-dot"></div><span id="model-status">Loading AI...</span></div>
       <div id="hint-overlay" class="hint-text">✨ Open your hand to summon snow ✨</div>
       
-      <!-- Edit Instructions -->
       <div id="edit-tips">
         <div class="tips-container">
-          <div class="tip-item"><span class="key">Pinch / Wheel</span> Zoom</div>
-          <div class="tip-item"><span class="key">Drag Empty</span> Pan</div>
-          <div class="tip-item"><span class="key">Drag Box</span> Move</div>
-          <div class="tip-item"><span class="key">Double Tap</span> Add/Del</div>
+          <div class="tip-item"><span class="key">Tap</span> Select</div>
+          <div class="tip-item"><span class="key">Drag Center</span> Move</div>
+          <div class="tip-item"><span class="key">Drag Corner</span> Resize</div>
+          <div class="tip-item"><span class="key">Double Tap</span> Add / Delete</div>
+          <div class="tip-item"><span class="key">Hold</span> Toggle Shape</div>
         </div>
       </div>
     </div>
 
-    <!-- Top Right Controls -->
     <div id="top-right-controls">
-      <button id="music-toggle" class="icon-btn">
-        <span>🎵</span> BGM
-      </button>
-      <button id="edit-mode-btn" class="icon-btn">
-        <span>🔧</span> Edit
-      </button>
+      <button id="music-toggle" class="icon-btn"><span>🎵</span> BGM</button>
+      <button id="edit-mode-btn" class="icon-btn"><span>🔧</span> Edit</button>
     </div>
 
-    <!-- Start Screen -->
     <div id="start-screen">
       <h1>Silent Night</h1>
       <p class="subtitle">Interactive Christmas Experience</p>
       <div class="loader" id="loader"></div>
       
       <div class="btn-group" id="controls">
-        <!-- Image Upload -->
-        <label for="file-input" class="ui-btn upload-btn">
-          <span>📷</span> Select Image
-        </label>
+        <label for="file-input" class="ui-btn upload-btn"><span>📷</span> Select Image</label>
         <input type="file" id="file-input" accept="image/*">
         
-        <!-- BGM Upload -->
-        <label for="audio-input" class="ui-btn audio-btn">
-          <span>🎵</span> Select BGM (Optional)
-        </label>
+        <label for="audio-input" class="ui-btn audio-btn"><span>🎵</span> Select BGM (Optional)</label>
         <input type="file" id="audio-input" accept="audio/*">
 
         <div class="status-container">
@@ -286,26 +237,22 @@
     let snowflakes = [], windows = [], stars = [];
     let isModelReady = false, isCamReady = false;
     
-    // Audio
-    let audioCtx; 
-    let lastSoundTime = 0;
-    let musicBox; // Procedural fallback
-    let customBGM = null; // Uploaded BGM
+    let audioCtx, lastSoundTime = 0, musicBox, customBGM = null;
     
-    // Edit Mode & View Transformation
+    // Edit Mode State
     let isEditing = false;
-    let draggingWindow = null;
-    let resizingWindow = null;
-    let draggingView = false;
+    let selectedWindow = null; // Currently selected window
+    let interactionState = 'NONE'; // NONE, MOVING, RESIZING, PANNING
+    let resizeHandle = -1; // 0:TL, 1:TR, 2:BR, 3:BL
     
-    // Viewport transform (Pan/Zoom)
+    // View Transform
     let view = { x: 0, y: 0, scale: 1, minScale: 0.5, maxScale: 4.0 };
-    let dragStart = { x: 0, y: 0 }; // for view panning
-    let dragOffset = { x: 0, y: 0 }; // for window dragging
-    let prevPinchDist = -1; // for pinch zoom
+    let dragStart = { x: 0, y: 0 }; 
+    let dragOffset = { x: 0, y: 0 };
+    let prevPinchDist = -1;
     let longPressTimer = null;
+    let lastTapTime = 0; // For custom double tap
 
-    // Config
     const CONFIG = { 
       maxSnowflakes: 120,
       openHandThreshold: 1.2,
@@ -313,10 +260,8 @@
     };
 
     function setup() {
-      // Initialize with full window size first
       const screenW = window.innerWidth;
       const screenH = window.innerHeight;
-      
       const cnv = createCanvas(screenW, screenH);
       cnv.parent('canvas-container');
       
@@ -324,7 +269,6 @@
 
       initWindows(); 
       initStars();
-      
       musicBox = new MusicBox();
       
       noLoop();
@@ -346,31 +290,25 @@
         document.getElementById('edit-tips').style.display = isEditing ? 'block' : 'none';
         editBtn.innerHTML = isEditing ? "<span>✅</span> Done" : "<span>🔧</span> Edit";
         
-        // Reset view when exiting edit mode
         if (!isEditing) {
-          view = { x: 0, y: 0, scale: 1, minScale: 0.5, maxScale: 4.0 };
+          selectedWindow = null; // Deselect on exit
+          view = { x: 0, y: 0, scale: 1, minScale: 0.5, maxScale: 4.0 }; // Reset zoom
         }
       });
 
-      // Music Toggle Logic (Custom vs Procedural)
       musicBtn.addEventListener('click', () => {
         userStartAudio();
-        
-        // Check if we are using Custom BGM or MusicBox
         if (customBGM) {
-          // Handling Custom BGM
           if (customBGM.isPlaying()) {
             customBGM.pause();
             musicBtn.classList.remove('playing');
           } else {
-            // Stop procedural if running
             musicBox.stop();
             customBGM.loop();
-            customBGM.setVolume(0.5); // Default volume for MP3s
+            customBGM.setVolume(0.5);
             musicBtn.classList.add('playing');
           }
         } else {
-          // Handling Procedural BGM
           if (!musicBox.isPlaying) {
             musicBox.play();
             musicBtn.classList.add('playing');
@@ -381,7 +319,6 @@
         }
       });
 
-      // Image Upload with Center Fit Logic
       fileInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -390,22 +327,17 @@
             bgImage = img;
             bgLoaded = true;
             
-            // Get current viewport size (Max available)
             const screenW = window.innerWidth;
             const screenH = window.innerHeight;
-            
-            // Calculate scale to fit comfortably within screen (leave 5% margin)
             const scaleW = (screenW * 0.95) / img.width;
             const scaleH = (screenH * 0.95) / img.height;
             const scale = Math.min(scaleW, scaleH);
             
             const finalW = img.width * scale;
             const finalH = img.height * scale;
-            
             resizeCanvas(finalW, finalH);
 
             initWindows(); 
-            
             imgStatus.innerText = `Image: ${file.name}`;
             imgStatus.style.color = "#86efac";
             startBtn.classList.add('ready');
@@ -413,11 +345,9 @@
         }
       });
 
-      // Audio Upload
       audioInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (file) {
-          // p5.sound loadSound can take a File object or URL
           const url = URL.createObjectURL(file);
           loadSound(url, (sound) => {
             customBGM = sound;
@@ -451,7 +381,6 @@
         if (video) {
             video.size(width, height);
             video.hide();
-            
             handpose = ml5.handpose(video, () => {
                 isModelReady = true;
                 updateUIStatus('model', true, "AI Ready");
@@ -465,28 +394,19 @@
                 loop();
             });
             handpose.on("predict", results => hands = results);
-        } else { 
-          alert("Camera access failed. Ensure HTTPS."); 
-        }
+        } else { alert("Camera access failed. Ensure HTTPS."); }
       } catch (err) { console.error(err); alert("Error: " + err.message); }
     }
 
-    // --- Soothing Procedural Music Box ---
+    // --- Audio Classes ---
     class MusicBox {
       constructor() {
         this.osc = new p5.Oscillator('sine'); 
         this.env = new p5.Envelope();
         this.env.setADSR(0.2, 0.3, 0.1, 0.8); 
         this.env.setRange(CONFIG.bgmVolume, 0);
-        
-        this.osc.start();
-        this.osc.amp(0);
-        
-        this.isPlaying = false;
-        this.currentNote = 0;
-        this.bpm = 75; 
-        this.nextNoteTime = 0;
-        
+        this.osc.start(); this.osc.amp(0);
+        this.isPlaying = false; this.currentNote = 0; this.bpm = 75; this.nextNoteTime = 0;
         this.melody = [
           { n: 392.00, d: 1.5 }, { n: 440.00, d: 0.5 }, { n: 392.00, d: 1.0 }, { n: 329.63, d: 3.0 }, 
           { n: 392.00, d: 1.5 }, { n: 440.00, d: 0.5 }, { n: 392.00, d: 1.0 }, { n: 329.63, d: 3.0 }, 
@@ -496,131 +416,85 @@
           { n: 392.00, d: 1.5 }, { n: 440.00, d: 0.5 }, { n: 392.00, d: 1.0 }, { n: 329.63, d: 3.0 }
         ];
       }
-      
-      play() {
-        this.isPlaying = true;
-        this.currentNote = 0;
-        this.nextNoteTime = millis();
-        this.osc.amp(0); 
-      }
-      
-      stop() {
-        this.isPlaying = false;
-        this.osc.amp(0);
-      }
-      
+      play() { this.isPlaying = true; this.currentNote = 0; this.nextNoteTime = millis(); this.osc.amp(0); }
+      stop() { this.isPlaying = false; this.osc.amp(0); }
       update() {
         if (!this.isPlaying) return;
         if (millis() >= this.nextNoteTime) {
           let note = this.melody[this.currentNote];
           this.osc.freq(note.n + random(-1, 1));
           this.env.play(this.osc, 0, 0.1);
-          
           let durationMs = note.d * (60000 / this.bpm);
           this.nextNoteTime = millis() + durationMs;
-          
           this.currentNote++;
           if (this.currentNote >= this.melody.length) this.currentNote = 0;
         }
       }
     }
 
-    // --- Crisp & Quiet Light Sound ---
     function playMagicSound() {
       if (!audioCtx) return;
       if (audioCtx.state === 'suspended') audioCtx.resume();
       if (millis() - lastSoundTime < 150) return;
       lastSoundTime = millis();
-
       const now = audioCtx.currentTime;
-      const baseFreq = 1046.50; 
-      const ratios = [1, 1.5]; 
-      
-      ratios.forEach((ratio, index) => {
+      [1, 1.5].forEach((ratio, index) => {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        osc.connect(gain); gain.connect(audioCtx.destination);
         osc.type = 'sine';
-        
-        const noteFreq = baseFreq * ratio;
-        osc.frequency.setValueAtTime(noteFreq, now + index * 0.05); 
-
+        osc.frequency.setValueAtTime(1046.50 * ratio, now + index * 0.05); 
         const startTime = now + index * 0.05;
         gain.gain.setValueAtTime(0, startTime);
         gain.gain.linearRampToValueAtTime(0.05, startTime + 0.02); 
         gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.5); 
-
-        osc.start(startTime);
-        osc.stop(startTime + 0.5);
+        osc.start(startTime); osc.stop(startTime + 0.5);
       });
     }
 
-    // --- Helper: Coordinate Conversion ---
+    // --- Drawing ---
     function screenToWorld(sx, sy) {
-      return {
-        x: (sx - view.x) / view.scale,
-        y: (sy - view.y) / view.scale
-      };
+      return { x: (sx - view.x) / view.scale, y: (sy - view.y) / view.scale };
     }
 
     function draw() {
       background(11, 16, 24);
       
-      // Apply View Transformation (Zoom/Pan)
       push();
       translate(view.x, view.y);
       scale(view.scale);
 
-      // Draw Scene
       if (bgLoaded && bgImage) {
         try { image(bgImage, 0, 0, width, height); } catch(e) { drawProceduralBackground(); }
       } else { drawProceduralBackground(); }
 
       if(musicBox) musicBox.update();
-
       updateWindows();
 
       if (!isEditing) {
-        handleHandInteraction(); // Logic needs world coords? Hand logic maps directly to width/height, might be offset if zoomed.
-        // Actually, hand logic maps video to canvas width/height. 
-        // If we zoom, the canvas logical size is same, but we are looking at a subset.
-        // We should probably keep hand interaction separate or allow hand to reach everywhere.
-        // For simplicity, hand snow summoning works in World Coordinates.
+        handleHandInteraction();
         updateSnowflakes();
       }
-      
-      pop(); // End View Transform
+      pop();
 
-      // UI Overlays (Screen Space)
       if (isEditing) {
-        // Darken overlay
         fill(0, 100); rect(0,0,width,height);
-        
-        // "Edit Mode" Text
         fill(255, 200); noStroke(); textAlign(CENTER); textSize(14);
         text("Edit Mode Active", width/2, 40);
-        
-        // Zoom Level Indicator
         if (view.scale !== 1) {
-          textSize(12); fill(255, 150);
-          text(`Zoom: ${view.scale.toFixed(1)}x`, width/2, 60);
+          textSize(12); fill(255, 150); text(`Zoom: ${view.scale.toFixed(1)}x`, width/2, 60);
         }
       }
     }
 
-    // --- Logic ---
     function handleHandInteraction() {
       if (hands.length > 0 && video && video.width) {
         const hand = hands[0];
         if (!isHandOpen(hand)) return; 
-
         let rawX = (hand.landmarks[5][0] + hand.landmarks[17][0]) / 2;
         let rawY = (hand.landmarks[5][1] + hand.landmarks[17][1]) / 2;
-        // Map video to canvas (World Space)
         let x = map(rawX, 0, video.width, width, 0); 
         let y = map(rawY, 0, video.height, 0, height);
-        
         drawMagicCursor(x, y);
         if (frameCount % 4 === 0) {
           const count = floor(random(2, 5));
@@ -630,12 +504,8 @@
     }
 
     function isHandOpen(hand) {
-      const landmarks = hand.landmarks;
       const dist = (p1, p2) => Math.sqrt(Math.pow(p1[0]-p2[0], 2) + Math.pow(p1[1]-p2[1], 2));
-      const wrist = landmarks[0];
-      const middleTip = landmarks[12];
-      const middleBase = landmarks[9];
-      return (dist(wrist, middleTip) / dist(wrist, middleBase)) > CONFIG.openHandThreshold;
+      return (dist(hand.landmarks[0], hand.landmarks[12]) / dist(hand.landmarks[0], hand.landmarks[9])) > CONFIG.openHandThreshold;
     }
 
     function drawMagicCursor(x, y) {
@@ -645,95 +515,94 @@
       pop();
     }
 
-    // --- Inputs & Zoom Logic ---
-    
-    // Mouse Wheel Zoom
+    // --- Input Handling ---
     function mouseWheel(event) {
       if (!isEditing) return;
       let e = -event.delta;
       let factor = Math.pow(1.01, e);
       zoomAt(mouseX, mouseY, factor);
-      return false; // Prevent browser scroll
+      return false; 
     }
 
     function zoomAt(cx, cy, factor) {
       let newScale = constrain(view.scale * factor, view.minScale, view.maxScale);
       factor = newScale / view.scale; 
-
       view.x = cx - (cx - view.x) * factor;
       view.y = cy - (cy - view.y) * factor;
       view.scale = newScale;
     }
 
     function mousePressed() { handleInputStart(mouseX, mouseY); }
-    
     function touchStarted() { 
       if (touches.length === 2 && isEditing) {
-        // Init pinch
         prevPinchDist = dist(touches[0].x, touches[0].y, touches[1].x, touches[1].y);
       } else if (touches.length === 1) {
-        handleInputStart(touches[0].x, touches[0].y);
+        // Custom Double Tap Detection
+        const now = millis();
+        if (now - lastTapTime < 300) {
+          handleDoubleInput(touches[0].x, touches[0].y);
+        } else {
+          handleInputStart(touches[0].x, touches[0].y);
+        }
+        lastTapTime = now;
       }
-      // return false; // Don't block default too aggressively or UI buttons might fail
     }
 
     function handleInputStart(mx, my) {
       if (!isEditing) return;
-      
-      // Convert screen click to world click for object detection
       const world = screenToWorld(mx, my);
-      const wx = world.x;
-      const wy = world.y;
+      const wx = world.x, wy = world.y;
 
-      // Check Windows
+      // 1. Check Long Press (Toggle Shape)
       longPressTimer = setTimeout(() => {
-        for (let w of windows) {
-          if (w.contains(wx, wy)) { w.toggleShape(); break; }
+        if (interactionState === 'NONE') {
+           for (let w of windows) {
+            if (w.contains(wx, wy)) { w.toggleShape(); break; }
+           }
         }
       }, 600); 
 
-      let hitWindow = false;
+      interactionState = 'NONE';
       
-      // Check Resize Corner
-      for (let w of windows) {
-        if (w.isCornerHover(wx, wy)) { resizingWindow = w; hitWindow = true; return; }
-      }
-      
-      // Check Drag Window
-      if (!hitWindow) {
-        for (let i = windows.length - 1; i >= 0; i--) {
-          let w = windows[i];
-          if (w.contains(wx, wy)) {
-            if (mouseButton === RIGHT) { w.toggleShape(); return; }
-            draggingWindow = w; 
-            dragOffset.x = wx - w.getPixelX(); 
-            dragOffset.y = wy - w.getPixelY(); 
-            hitWindow = true;
-            return;
-          }
+      // 2. Check for Resize Handles on SELECTED window ONLY
+      if (selectedWindow) {
+        let handle = selectedWindow.getHoverHandle(wx, wy);
+        if (handle !== -1) {
+           interactionState = 'RESIZING';
+           resizeHandle = handle;
+           return;
         }
       }
 
-      // If nothing hit, start Panning the View
-      if (!hitWindow) {
-        draggingView = true;
-        dragStart.x = mx;
-        dragStart.y = my;
+      // 3. Check for Click on Windows
+      let hitWindow = null;
+      for (let i = windows.length - 1; i >= 0; i--) {
+        if (windows[i].contains(wx, wy)) { hitWindow = windows[i]; break; }
+      }
+
+      if (hitWindow) {
+        if (selectedWindow !== hitWindow) {
+          // Select new window
+          selectedWindow = hitWindow;
+        } 
+        // Start moving
+        interactionState = 'MOVING';
+        dragOffset.x = wx - selectedWindow.getPixelX();
+        dragOffset.y = wy - selectedWindow.getPixelY();
+      } else {
+        // Clicked empty space
+        selectedWindow = null; // Deselect
+        interactionState = 'PANNING';
+        dragStart.x = mx; dragStart.y = my;
       }
     }
 
-    function mouseDragged() { 
-      // Mouse dragging is single pointer
-      handleInputMove(mouseX, mouseY, false); 
-    }
-    
+    function mouseDragged() { handleInputMove(mouseX, mouseY); }
     function touchMoved() { 
       if (touches.length === 2 && isEditing) {
-        // Pinch Zoom Logic
         let currDist = dist(touches[0].x, touches[0].y, touches[1].x, touches[1].y);
         let cx = (touches[0].x + touches[1].x) / 2;
         let cy = (touches[0].y + touches[1].y) / 2;
-        
         if (prevPinchDist > 0) {
           let factor = currDist / prevPinchDist;
           zoomAt(cx, cy, factor);
@@ -741,57 +610,66 @@
         prevPinchDist = currDist;
         return false;
       } else if (touches.length === 1) {
-        handleInputMove(touches[0].x, touches[0].y, true); 
+        handleInputMove(touches[0].x, touches[0].y); 
         return false; 
       }
     }
 
-    function handleInputMove(mx, my, isTouch) {
+    function handleInputMove(mx, my) {
       if (!isEditing) return;
-      if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
+      if (longPressTimer && (interactionState === 'MOVING' || interactionState === 'RESIZING' || interactionState === 'PANNING')) {
+        clearTimeout(longPressTimer); longPressTimer = null;
+      }
 
       const world = screenToWorld(mx, my);
 
-      if (resizingWindow) {
-        let newW = world.x - resizingWindow.getPixelX();
-        let newH = world.y - resizingWindow.getPixelY();
-        resizingWindow.setPixelSize(max(10, newW), max(10, newH));
-      } else if (draggingWindow) {
-        draggingWindow.setPixelPos(world.x - dragOffset.x, world.y - dragOffset.y);
-      } else if (draggingView) {
-        // Panning: delta in screen space maps 1:1 to view translation
+      if (interactionState === 'RESIZING' && selectedWindow) {
+        selectedWindow.resizeByHandle(world.x, world.y, resizeHandle);
+      } else if (interactionState === 'MOVING' && selectedWindow) {
+        selectedWindow.setPixelPos(world.x - dragOffset.x, world.y - dragOffset.y);
+      } else if (interactionState === 'PANNING') {
         let dx = mx - dragStart.x;
         let dy = my - dragStart.y;
-        view.x += dx;
-        view.y += dy;
-        dragStart.x = mx;
-        dragStart.y = my;
+        view.x += dx; view.y += dy;
+        dragStart.x = mx; dragStart.y = my;
       }
     }
 
     function mouseReleased() { clearInput(); }
-    function touchEnded() { 
-        clearInput(); 
-        prevPinchDist = -1; // reset pinch
-    }
+    function touchEnded() { clearInput(); prevPinchDist = -1; }
     
     function clearInput() {
-      draggingWindow = null; resizingWindow = null; draggingView = false;
+      interactionState = 'NONE';
       if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
     }
     
-    function doubleClicked() { handleDoubleInput(mouseX, mouseY); }
+    // Desktop Double Click
+    function doubleClicked() { 
+       if(!('ontouchstart' in window)) handleDoubleInput(mouseX, mouseY); 
+    }
+    
     function handleDoubleInput(mx, my) {
       if (!isEditing) return;
-      
       const world = screenToWorld(mx, my);
-      const wx = world.x;
-      const wy = world.y;
+      const wx = world.x, wy = world.y;
 
+      let hit = false;
       for (let i = windows.length - 1; i >= 0; i--) {
-        if (windows[i].contains(wx, wy)) { windows.splice(i, 1); return; }
+        if (windows[i].contains(wx, wy)) {
+           // Delete window
+           windows.splice(i, 1);
+           selectedWindow = null;
+           hit = true;
+           break;
+        }
       }
-      windows.push(new Window(wx/width, wy/height, 0.08, 0.08));
+      
+      if (!hit) {
+        // Add new window
+        let newWin = new Window(wx/width, wy/height, 0.08, 0.08);
+        windows.push(newWin);
+        selectedWindow = newWin; // Auto select new window
+      }
     }
 
     // --- Classes ---
@@ -800,30 +678,59 @@
         this.nx = nx; this.ny = ny; this.nw = nw; this.nh = nh;
         this.brightness = 0; this.state = 'IDLE'; this.timer = 0; this.shape = 'RECT'; 
       }
-      // Note: getPixelX/Y/W/H returns coordinates in "World Space" (0 to width)
       getPixelX() { return this.nx * width; }
       getPixelY() { return this.ny * height; }
       getPixelW() { return this.nw * width; }
       getPixelH() { return this.nh * height; }
       setPixelPos(px, py) { this.nx = px / width; this.ny = py / height; }
       setPixelSize(pw, ph) { this.nw = pw / width; this.nh = ph / height; }
-      toggleShape() { this.shape = (this.shape === 'RECT') ? 'CIRCLE' : 'RECT'; }
+      
       contains(px, py) {
         let x = this.getPixelX(), y = this.getPixelY(), w = this.getPixelW(), h = this.getPixelH();
         return px > x && px < x + w && py > y && py < y + h;
       }
-      isCornerHover(px, py) {
+
+      getHoverHandle(px, py) {
+        // Returns 0:TL, 1:TR, 2:BR, 3:BL, -1:None
         let x = this.getPixelX(), y = this.getPixelY(), w = this.getPixelW(), h = this.getPixelH();
-        // Corner hit size should be constant in Screen Space? 
-        // Currently defined in World Space (25px). If zoomed out, it becomes harder to hit. 
-        // If zoomed in, easier. This is acceptable behavior.
-        return dist(px, py, x + w, y + h) < 25; 
+        let r = 30 / view.scale; // Handle radius adjusts with zoom for easier hit
+        
+        if (dist(px, py, x, y) < r) return 0;
+        if (dist(px, py, x + w, y) < r) return 1;
+        if (dist(px, py, x + w, y + h) < r) return 2;
+        if (dist(px, py, x, y + h) < r) return 3;
+        return -1;
       }
+      
+      resizeByHandle(mx, my, handle) {
+        let x = this.getPixelX(), y = this.getPixelY(), w = this.getPixelW(), h = this.getPixelH();
+        let nx = x, ny = y, nw = w, nh = h;
+        
+        if (handle === 0) { // TL
+           nw = (x + w) - mx; nh = (y + h) - my; nx = mx; ny = my;
+        } else if (handle === 1) { // TR
+           nw = mx - x; nh = (y + h) - my; ny = my;
+        } else if (handle === 2) { // BR
+           nw = mx - x; nh = my - y;
+        } else if (handle === 3) { // BL
+           nw = (x + w) - mx; nh = my - y; nx = mx;
+        }
+        
+        // Min size constraint
+        if (nw > 10 && nh > 10) {
+            this.setPixelPos(nx, ny);
+            this.setPixelSize(nw, nh);
+        }
+      }
+
+      toggleShape() { this.shape = (this.shape === 'RECT') ? 'CIRCLE' : 'RECT'; }
+      
       trigger() {
         if (this.state === 'IDLE' || this.state === 'FADING') {
           this.state = 'TRIGGERED'; this.timer = 0; playMagicSound();
         }
       }
+      
       update() {
         if(isEditing) { this.brightness = 0.5; return; }
         this.timer++;
@@ -841,33 +748,55 @@
             break;
         }
       }
+      
       display() {
         let x = this.getPixelX(), y = this.getPixelY(), w = this.getPixelW(), h = this.getPixelH();
         
         if (isEditing) {
-          stroke(255, 200); strokeWeight(1); fill(255, 200, 100, 50);
-          if (this.shape === 'CIRCLE') {
-             rect(x, y, w, h); 
-             fill(255, 220, 100, 150); 
-             ellipse(x + w/2, y + h/2, w, h); 
-          } else { rect(x, y, w, h); }
-          noStroke(); fill(255); circle(x + w, y + h, 12); return;
+          // Edit Mode Visuals
+          let isSel = (selectedWindow === this);
+          
+          strokeWeight(2 / view.scale);
+          if (isSel) {
+            stroke(0, 255, 200); // Bright Teal for Selected
+            fill(0, 255, 200, 40);
+          } else {
+            stroke(255, 100); // Faint White for others
+            fill(255, 20);
+          }
+          
+          if (this.shape === 'CIRCLE') ellipse(x + w/2, y + h/2, w, h);
+          else rect(x, y, w, h);
+          
+          // Draw Handles if selected
+          if (isSel) {
+             noStroke(); fill(0, 255, 200);
+             let r = 8 / view.scale;
+             circle(x, y, r); // TL
+             circle(x + w, y, r); // TR
+             circle(x + w, y + h, r); // BR
+             circle(x, y + h, r); // BL
+          }
+          return;
         }
 
+        // Play Mode Visuals (Soft Glow)
         if (this.brightness > 0.01) {
           push();
           const alpha = this.brightness * 255;
           const cx = x + w/2; const cy = y + h/2;
           
-          drawingContext.filter = 'blur(15px)'; 
-          fill(255, 180, 60, alpha * 0.4);
-          if (this.shape === 'CIRCLE') ellipse(cx, cy, w*1.2, h*1.2);
-          else rect(x - w*0.1, y - h*0.1, w*1.2, h*1.2);
+          // 1. Outer Soft Glow (Warmer & Blurry)
+          drawingContext.filter = 'blur(25px)'; 
+          fill(255, 160, 60, alpha * 0.5); 
+          if (this.shape === 'CIRCLE') ellipse(cx, cy, w*1.4, h*1.4);
+          else rect(x - w*0.2, y - h*0.2, w*1.4, h*1.4);
 
-          drawingContext.filter = 'blur(4px)';
-          fill(255, 240, 180, alpha * 0.9);
-          if (this.shape === 'CIRCLE') ellipse(cx, cy, w*0.85, h*0.85);
-          else rect(x + w*0.1, y + h*0.1, w*0.8, h*0.8); 
+          // 2. Inner Light Source
+          drawingContext.filter = 'blur(8px)';
+          fill(255, 220, 150, alpha * 0.9);
+          if (this.shape === 'CIRCLE') ellipse(cx, cy, w*0.9, h*0.9);
+          else rect(x + w*0.05, y + h*0.05, w*0.9, h*0.9); 
 
           pop();
         }
