@@ -534,7 +534,9 @@
 
     function mousePressed() { handleInputStart(mouseX, mouseY); }
     function touchStarted() { 
-      if (touches.length === 2 && isEditing) {
+      if (!isEditing) return;
+
+      if (touches.length === 2) {
         prevPinchDist = dist(touches[0].x, touches[0].y, touches[1].x, touches[1].y);
       } else if (touches.length === 1) {
         // Custom Double Tap Detection
@@ -546,6 +548,7 @@
         }
         lastTapTime = now;
       }
+      return false; // Critical for mobile: prevent mousePressed firing after touchStarted
     }
 
     function handleInputStart(mx, my) {
@@ -599,7 +602,9 @@
 
     function mouseDragged() { handleInputMove(mouseX, mouseY); }
     function touchMoved() { 
-      if (touches.length === 2 && isEditing) {
+      if (!isEditing) return;
+      
+      if (touches.length === 2) {
         let currDist = dist(touches[0].x, touches[0].y, touches[1].x, touches[1].y);
         let cx = (touches[0].x + touches[1].x) / 2;
         let cy = (touches[0].y + touches[1].y) / 2;
@@ -608,11 +613,10 @@
           zoomAt(cx, cy, factor);
         }
         prevPinchDist = currDist;
-        return false;
       } else if (touches.length === 1) {
         handleInputMove(touches[0].x, touches[0].y); 
-        return false; 
       }
+      return false; // Prevent scrolling and duplicate events
     }
 
     function handleInputMove(mx, my) {
@@ -636,7 +640,11 @@
     }
 
     function mouseReleased() { clearInput(); }
-    function touchEnded() { clearInput(); prevPinchDist = -1; }
+    function touchEnded() { 
+      clearInput(); 
+      prevPinchDist = -1; 
+      return false; // Prevent default behavior
+    }
     
     function clearInput() {
       interactionState = 'NONE';
@@ -693,7 +701,8 @@
       getHoverHandle(px, py) {
         // Returns 0:TL, 1:TR, 2:BR, 3:BL, -1:None
         let x = this.getPixelX(), y = this.getPixelY(), w = this.getPixelW(), h = this.getPixelH();
-        let r = 30 / view.scale; // Handle radius adjusts with zoom for easier hit
+        // Larger touch target for mobile: 45 instead of 30
+        let r = 45 / view.scale; 
         
         if (dist(px, py, x, y) < r) return 0;
         if (dist(px, py, x + w, y) < r) return 1;
@@ -771,7 +780,7 @@
           // Draw Handles if selected
           if (isSel) {
              noStroke(); fill(0, 255, 200);
-             let r = 8 / view.scale;
+             let r = 12 / view.scale; // Larger visual handles
              circle(x, y, r); // TL
              circle(x + w, y, r); // TR
              circle(x + w, y + h, r); // BR
@@ -780,23 +789,36 @@
           return;
         }
 
-        // Play Mode Visuals (Soft Glow)
+        // Play Mode Visuals (Gradient Approach)
         if (this.brightness > 0.01) {
           push();
-          const alpha = this.brightness * 255;
-          const cx = x + w/2; const cy = y + h/2;
-          
-          // 1. Outer Soft Glow (Warmer & Blurry)
-          drawingContext.filter = 'blur(25px)'; 
-          fill(255, 160, 60, alpha * 0.5); 
-          if (this.shape === 'CIRCLE') ellipse(cx, cy, w*1.4, h*1.4);
-          else rect(x - w*0.2, y - h*0.2, w*1.4, h*1.4);
+          const alpha = this.brightness;
+          const cx = x + w / 2;
+          const cy = y + h / 2;
+          const ctx = drawingContext;
 
-          // 2. Inner Light Source
-          drawingContext.filter = 'blur(8px)';
-          fill(255, 220, 150, alpha * 0.9);
-          if (this.shape === 'CIRCLE') ellipse(cx, cy, w*0.9, h*0.9);
-          else rect(x + w*0.05, y + h*0.05, w*0.9, h*0.9); 
+          // 1. Create Radial Gradient for Glow
+          // Center (cx, cy) to Outer Edge (radius)
+          let radius = max(w, h) * 2.0; // Large glow radius
+          let gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
+          
+          // Gradient Colors: Core (White/Yellow) -> Mid (Orange) -> Edge (Transparent)
+          // Adjust these colors to match the warm orange preference
+          gradient.addColorStop(0, `rgba(255, 240, 200, ${alpha})`);
+          gradient.addColorStop(0.2, `rgba(255, 180, 60, ${alpha * 0.8})`);
+          gradient.addColorStop(0.5, `rgba(255, 120, 20, ${alpha * 0.3})`);
+          gradient.addColorStop(1, 'rgba(255, 100, 0, 0)');
+
+          ctx.fillStyle = gradient;
+          ctx.beginPath();
+          ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+          ctx.fill();
+
+          // 2. Draw the actual Window Shape (The "Source" of light)
+          fill(255, 230, 180, alpha * 200); // p5 fill (0-255 alpha)
+          noStroke();
+          if (this.shape === 'CIRCLE') ellipse(cx, cy, w * 0.8, h * 0.8);
+          else rect(x + w*0.1, y + h*0.1, w * 0.8, h * 0.8);
 
           pop();
         }
