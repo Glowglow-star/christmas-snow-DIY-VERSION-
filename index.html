@@ -533,7 +533,14 @@
     }
 
     function mousePressed() { handleInputStart(mouseX, mouseY); }
-    function touchStarted() { 
+    function touchStarted(event) { 
+      // Critical: Check if we touched a UI element (button/input/label) FIRST
+      // If the target is NOT the canvas, we must allow the default behavior (click) to happen.
+      // Usually checking if tag is NOT CANVAS is enough because the canvas is the only thing we want to preventDefault on.
+      if (event && event.target && event.target.tagName !== 'CANVAS') {
+        return true; 
+      }
+
       if (!isEditing) return;
 
       if (touches.length === 2) {
@@ -548,7 +555,7 @@
         }
         lastTapTime = now;
       }
-      return false; // Critical for mobile: prevent mousePressed firing after touchStarted
+      return false; // Critical for mobile: prevent mousePressed firing after touchStarted ONLY for Canvas interactions
     }
 
     function handleInputStart(mx, my) {
@@ -601,7 +608,12 @@
     }
 
     function mouseDragged() { handleInputMove(mouseX, mouseY); }
-    function touchMoved() { 
+    function touchMoved(event) { 
+      // Allow scroll on non-canvas elements
+      if (event && event.target && event.target.tagName !== 'CANVAS') {
+        return true;
+      }
+
       if (!isEditing) return;
       
       if (touches.length === 2) {
@@ -616,7 +628,7 @@
       } else if (touches.length === 1) {
         handleInputMove(touches[0].x, touches[0].y); 
       }
-      return false; // Prevent scrolling and duplicate events
+      return false; // Prevent scrolling and duplicate events on canvas
     }
 
     function handleInputMove(mx, my) {
@@ -640,10 +652,15 @@
     }
 
     function mouseReleased() { clearInput(); }
-    function touchEnded() { 
+    function touchEnded(event) { 
+      // Critical: Allow click events to propagate for UI elements
+      if (event && event.target && event.target.tagName !== 'CANVAS') {
+        return true;
+      }
+
       clearInput(); 
       prevPinchDist = -1; 
-      return false; // Prevent default behavior
+      return false; // Prevent default behavior only for canvas
     }
     
     function clearInput() {
